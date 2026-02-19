@@ -5,7 +5,6 @@ import PostCard from "@/components/PostCard";
 import { createClient } from "@/utils/supabase/client";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Sparkles, Flame, Inbox, RefreshCcw } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 // --- Types ---

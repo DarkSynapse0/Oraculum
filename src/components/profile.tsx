@@ -11,7 +11,7 @@ import {
   FileText,
   Award,
   MessageSquare,
-  User as UserIcon,
+  User,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "./PostCard";

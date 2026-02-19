@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -67,9 +68,7 @@ export default function PostCard({
         if (res.ok && data.voteType) {
           setVoteState((prev) => ({ ...prev, type: data.voteType }));
         }
-      } catch (e) {
-        /* silent fail for pro feel */
-      }
+      } catch (e) {}
     };
     fetchStatus();
   }, [id, currentUserId]);
