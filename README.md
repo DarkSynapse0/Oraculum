@@ -1,89 +1,78 @@
+# Oraculum
 
-# **Oraculum**
+Oraculum is a modern web application built with Next.js and Supabase. It leverages the power of Google's Generative AI to provide a unique and interactive user experience.
 
-Oraculum is a powerful Q&A platform designed to foster learning and knowledge sharing. Whether you're looking to ask questions, provide insightful answers, or engage with a vibrant community, Oraculum offers a seamless experience with an intuitive interface and engaging features.
+## Features
 
-## **Project Overview**
-Oraculum empowers users to ask questions and receive answers from a community of learners, experts, and enthusiasts. With its dynamic voting system, the best answers rise to the top, ensuring high-quality content. Built with PHP and MySQL, the platform is efficient and scalable, ready for users to engage, share, and grow.
+- **User Authentication:** Secure user registration and login functionality.
+- **Post Management:** Create, view, and search for posts.
+- **Interactive Q&A:** Create and list answers and replies to posts.
+- **Voting System:** Upvote or downvote posts.
+- **Personalized Recommendations:** Get post recommendations.
+- **User Profiles:** View and manage user profiles.
+- **Notifications:** Receive and manage notifications.
+- **Theme Customization:** Switch between light and dark modes.
 
-### **Key Features:**
-- 📝 **Ask Questions**: Easily post questions on any topic.
-- 💡 **Answer Questions**: Provide answers and contribute to the community.
-- 🔼 **Vote on Answers**: Upvote or downvote answers to highlight the most valuable contributions.
-- 📊 **Best Answer Selection**: The highest-voted answers become the go-to resources for others.
-- 🔄 **Real-time Updates**: See answer counts and voting statistics in real time.
-- 🔐 **User Authentication**: Secure login and registration system.
-- 📂 **Admin Dashboard**: Manage users, questions, and answers effectively.
+## Getting Started
 
----
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## **Technology Stack**
-Oraculum leverages a modern technology stack for high performance and scalability:
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: PHP, MySQL
-- **Version Control**: Git & GitHub for collaborative development and version control.
+### Prerequisites
 
----
+- Node.js (v20 or later)
+- npm
 
-## **Installation Guide**
-Follow these steps to get Oraculum up and running on your local machine:
+### Installation
 
-### **1. Clone the Repository**
-```bash
-git clone https://github.com/TheGoodSpirit/Oraculum.git
-cd Oraculum
+1. Clone the repo
+   ```sh
+   git clone https://github.com/your_username/oraculum.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+3. Setup your Supabase and Google Generative AI credentials in a `.env.local` file.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+- `npm run dev`: Runs the app in the development mode.
+- `npm run build`: Builds the app for production.
+- `npm run start`: Starts a production server.
+- `npm run lint`: Lints the code.
+
+## Dependencies
+
+- **Next.js:** A React framework for building server-side rendered and static web applications.
+- **Supabase:** An open source Firebase alternative for building secure and scalable backends.
+- **Radix UI:** A collection of low-level UI components for building high-quality design systems.
+- **Tailwind CSS:** A utility-first CSS framework for rapid UI development.
+- **Google Generative AI:** Google's powerful AI models for generating content.
+- **Lucide React:** A library of beautiful and consistent icons.
+
+## Project Structure
+
+The project follows a standard Next.js `app` directory structure.
+
+```
+/
+├── public/
+├── src/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── dashboard/
+│   │   └── ...
+│   ├── components/
+│   ├── lib/
+│   └── utils/
+└── ...
 ```
 
-### **2. Set Up the Database**
-- Import the `oraculum.sql` file located in the `/Assets/DB` folder into your MySQL database.
-- Update the `/PHP/startConnection.php` file with your database credentials.
-
-### **3. Start the Server**
-You can use XAMPP, WAMP, or any local PHP server:
-```bash
-php -S localhost:8000
-```
-
-### **4. Access Oraculum**
-Open your browser and navigate to:
-```
-http://localhost:8000
-```
-
----
-
-## **How It Works**
-### **For Users**:
-1. **Sign up** or **Log in** to access the platform.
-2. Post your questions or browse existing ones.
-3. Answer questions and vote on the most helpful answers.
-4. Enjoy an intuitive and rewarding knowledge-sharing experience!
-
-### **For Admins**:
-- Manage user-generated content through a dedicated dashboard.
-- Review and delete inappropriate questions or answers.
-- Monitor activity to ensure a positive and productive environment.
-
----
-
-## **Contributing**
-Oraculum welcomes contributions! Here's how you can help:
-1. Fork the repository.
-2. Create a new branch for your feature: `git checkout -b feature-name`.
-3. Push your branch and create a pull request.
-
----
-
-## **License**
-This project is licensed under the MIT License. Feel free to use it, modify it, and improve it!
-
----
-
-### **Join the Oraculum Community**
-Become a part of a growing knowledge-sharing platform. Whether you're curious or an expert, Oraculum is the perfect place to ask, learn, and contribute!
-
-🔗 [Live Demo](https://oraculum.example.com)
-
----
-
-With **Oraculum**, knowledge is shared, insights are uncovered, and everyone grows together! 🌟
+- **`src/app/api`**: Contains all the API routes for the application.
+- **`src/app/dashboard`**: Contains the pages for the user dashboard.
+- **`src/components`**: Contains all the reusable UI components.
+- **`src/lib`**: Contains utility functions and libraries.
+- **`src/utils`**: Contains utility functions, including Supabase client and middleware.
+- **`public`**: Contains all the static assets.

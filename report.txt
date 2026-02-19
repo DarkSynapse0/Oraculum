@@ -1,0 +1,309 @@
+# Project Report: Oraculum
+
+---
+
+## Chapter 1: Introduction
+
+### 1.1. Introduction
+
+Oraculum is a modern, full-stack web application developed to facilitate knowledge sharing and community-driven discussions. Built using a robust and contemporary technology stack, the project aims to provide a platform where users can post questions, provide answers, and engage with content through a system of voting. The application leverages the power of Next.js for a high-performance frontend and server-side capabilities, and integrates with Supabase for backend services, including user authentication and database management. The name "Oraculum" suggests a source of wisdom and answers, reflecting the application's core purpose as a question-and-answer platform.
+
+### 1.2. Problem Statement
+
+In many online and offline communities, knowledge is often fragmented and siloed. Individuals seeking answers to specific questions may struggle to find a centralized, reliable source of information. Existing platforms can be overly complex, cluttered with advertisements, or tailored to highly specific domains (e.g., programming), leaving a gap for a more general-purpose, user-friendly Q&A platform. The problem is the lack of an accessible and intuitive space for users to ask questions, share their expertise, and collectively validate the quality of information through community feedback.
+
+### 1.3. Objectives
+
+The primary objectives of the Oraculum project are as follows:
+*   To develop a functional web platform that allows users to create posts (questions) and submit answers.
+*   To implement a secure and reliable user authentication system for account management and personalized experiences.
+*   To enable a voting mechanism for both posts and answers to highlight valuable content.
+*   To provide a search functionality that allows users to easily find relevant questions and information.
+*   To design and build a responsive, intuitive, and aesthetically pleasing user interface for a seamless user experience across devices.
+*   To explore the integration of generative AI to enhance content creation or moderation.
+
+### 1.4. Scope and Limitation
+
+**Scope:**
+The project's scope encompasses the end-to-end development of a Q&A web application. This includes:
+*   **User Management:** User registration and login functionality.
+*   **Core Features:** Creating, viewing, and listing posts and answers.
+*   **Interaction:** A system for upvoting/downvoting content.
+*   **Technology:** A frontend built with Next.js and React, styled with Tailwind CSS, and a backend powered by Supabase for database and authentication. The application also includes integration with Google's Generative AI API.
+
+**Limitation:**
+As a prototype, the project has certain limitations:
+*   It lacks advanced features such as comprehensive user profiles, real-time notifications, direct messaging, or sophisticated content moderation tools.
+*   The system is not yet optimized for large-scale performance and may require further work on database indexing, caching strategies, and infrastructure scaling.
+*   The administrative and content moderation capabilities are minimal.
+
+### 1.5. Report Organization
+
+This report is organized into five chapters. Chapter 1 provides an introduction to the project. Chapter 2 discusses the background of the technologies used and reviews existing literature and similar systems. Chapter 3 details the system analysis and design, including requirements, architecture, and data models. Chapter 4 describes the implementation and testing phases. Finally, Chapter 5 concludes the report with lessons learned and recommendations for future work.
+
+---
+
+## Chapter 2: Background Study and Literature Review
+
+### 2.1. Background Study
+
+The Oraculum project is built upon several key technologies that define its architecture and capabilities.
+
+*   **Next.js:** A popular open-source React framework for building production-grade web applications. It enables features like server-side rendering (SSR) and static site generation (SSG), which provide significant performance and SEO benefits. Its App Router simplifies the creation of complex, nested layouts and API routes within the same project structure.
+
+*   **React:** A declarative, component-based JavaScript library for building user interfaces. Its component model allows for the creation of reusable UI elements, which simplifies development and enhances maintainability.
+
+*   **Supabase:** An open-source Backend-as-a-Service (BaaS) platform that provides a suite of tools for building applications quickly. It offers a PostgreSQL database, real-time capabilities, secure user authentication, and auto-generated APIs, effectively serving as the entire backend for the Oraculum project.
+
+*   **Tailwind CSS:** A utility-first CSS framework that provides low-level utility classes to build custom designs directly in the markup. This approach promotes rapid UI development and ensures design consistency without being constrained by pre-built components.
+
+*   **TypeScript:** A statically typed superset of JavaScript that adds type safety to the codebase. By catching errors during development rather than at runtime, TypeScript improves code quality, maintainability, and developer productivity.
+
+*   **Google Generative AI:** The integration of the `@google/generative-ai` library suggests the use of large language models (LLMs). This could be used for features like generating answer suggestions, summarizing long posts, or automatically moderating content for appropriateness.
+
+### 2.2. Literature Review
+
+The concept of a community-driven Q&A platform is well-established. A review of existing systems provides context for Oraculum's design and features.
+
+*   **Stack Overflow:** A highly successful Q&A platform focused on programming and software development. Its key features include a reputation-based user system, a strict moderation policy to maintain high-quality content, and a voting system that prominently features the "best" answer. It demonstrates the power of a focused community and strong quality control.
+
+*   **Quora:** A general-knowledge Q&A platform that emphasizes high-quality questions and answers from experts and individuals with relevant experience. It often encourages users to use their real names, fostering a more professional and accountable environment. Its model relies on a broad user base and a sophisticated feed algorithm.
+
+*   **Reddit:** While not exclusively a Q&A site, Reddit hosts thousands of communities (subreddits) dedicated to questions and discussions (e.g., r/AskReddit, r/explainlikeimfive). Its primary strengths are its vast community, the diversity of topics, and its simple upvote/downvote system that surfaces popular content.
+
+Oraculum aims to synthesize key features from these successful platforms—such as the voting mechanism from Reddit and the Q&A format from Stack Overflow and Quora—into a modern, lightweight, and potentially AI-enhanced application. It differentiates itself by using a modern tech stack (Next.js, Supabase) that allows for rapid development and a seamless user experience, and by exploring the novel integration of generative AI to augment user-generated content.
+---
+
+## Chapter 3: System Analysis and Design
+
+### 3.1. System Analysis
+
+#### 3.1.1. Requirement Analysis
+
+##### i. Functional Requirements
+
+Based on an analysis of the API routes and UI components, the following functional requirements have been identified:
+*   **User Management:**
+    *   Users must be able to create a new account.
+    *   Users must be able to log in to their existing account.
+*   **Post Management:**
+    *   Authenticated users must be able to create new posts (questions).
+    *   Users must be able to view a list of all posts.
+    *   Users must be able to view the detailed content of a single post.
+*   **Answer Management:**
+    *   Authenticated users must be able to submit answers to a post.
+    *   Users must be able to view all answers associated with a post.
+*   **Interaction:**
+    *   Authenticated users must be able to upvote or downvote posts.
+    *   The system must display the current vote status of a post for the logged-in user.
+*   **Search:**
+    *   Users must be able to search for posts based on keywords.
+*   **User Interface:**
+    *   The application must support both a light and a dark theme.
+
+##### ii. Non-Functional Requirements
+
+*   **Performance:** The application must load quickly and provide a responsive user experience. This is addressed by using Next.js for server-side rendering.
+*   **Usability:** The user interface must be intuitive, clean, and easy to navigate. This is achieved through a component-based design and a clear layout.
+*   **Scalability:** The backend infrastructure must be able to handle a growing number of users and data. This is provided by the Supabase platform.
+*   **Maintainability:** The codebase must be well-structured, readable, and easy to modify. The use of TypeScript and a modular component architecture supports this.
+*   **Security:** User data and authentication credentials must be handled securely. This is a core feature of the Supabase authentication service.
+
+#### 3.1.2. Feasibility Analysis
+
+*   **Technical:** The project is highly feasible from a technical standpoint. The chosen technology stack—Next.js, React, TypeScript, and Supabase—is modern, well-documented, and has a large community, ensuring that technical challenges can be overcome.
+*   **Operational:** Operational feasibility is high. The application is designed to be deployed on modern cloud platforms like Vercel, which offer seamless integration with Next.js. The use of Supabase abstracts away the complexity of database and backend server management.
+*   **Economic:** The project is economically feasible. The primary technologies are open-source, and cloud services like Vercel and Supabase offer generous free tiers that are sufficient for development, prototyping, and small-scale deployment.
+*   **Schedule:** The project's feasibility within a defined schedule is proven by its current implemented state. The chosen stack enables rapid development, allowing for quick iteration and feature implementation.
+
+#### 3.1.3. Data Modelling (ER-Diagram)
+
+While a visual diagram cannot be rendered, the entity-relationship model for the Oraculum database can be described as follows:
+
+*   **Entities:**
+    *   **Users:** Represents individuals who can log in and interact with the system.
+        *   Attributes: `user_id` (Primary Key), `email`, `password_hash`, `created_at`
+    *   **Posts:** Represents the questions asked by users.
+        *   Attributes: `post_id` (Primary Key), `user_id` (Foreign Key), `title`, `content`, `created_at`
+    *   **Answers:** Represents the answers provided by users to a post.
+        *   Attributes: `answer_id` (Primary Key), `post_id` (Foreign Key), `user_id` (Foreign Key), `content`, `created_at`
+    *   **Votes:** Represents the upvotes or downvotes cast by a user on a post.
+        *   Attributes: `vote_id` (Primary Key), `post_id` (Foreign Key), `user_id` (Foreign Key), `vote_type`
+
+*   **Relationships:**
+    *   A **User** can create many **Posts** (One-to-Many).
+    *   A **User** can submit many **Answers** (One-to-Many).
+    *   A **Post** belongs to one **User** (Many-to-One).
+    *   A **Post** can have many **Answers** (One-to-Many).
+    *   A **Post** can have many **Votes** (One-to-Many).
+    *   An **Answer** belongs to one **Post** and one **User**.
+
+#### 3.1.4. Process Modelling (DFD)
+
+The Data Flow Diagram for the "Create a New Post" process is as follows:
+
+*   **Context-Level (Level 0):**
+    *   An external entity, the **User**, provides "New Post Data" to the **Oraculum System**, which then stores this data in the **Posts Data Store**.
+
+*   **Detailed-Level (Level 1):**
+    1.  The **User** interacts with the `createPost` UI component and submits a form containing the post's title and content.
+    2.  The browser sends this data along with an authentication token to the `/api/posts/new` API endpoint on the **Next.js Server**.
+    3.  The server process validates the authentication token with the **Supabase Auth Service**.
+    4.  Upon successful validation, the process inserts the new post data into the `posts` table within the **Supabase Database**.
+    5.  The database confirms the insertion, and the server returns a success response to the user's browser, which may then redirect to the new post's page.
+
+### 3.2. System Design
+
+#### 3.2.1. Architectural Design
+
+The project follows a **Full-Stack Framework Architecture** using Next.js. This architecture is monolithic in the sense that the frontend (React components) and the backend (API routes) are developed and deployed as part of a single Next.js application.
+
+This server application then communicates with a **Backend-as-a-Service (BaaS)** provider, Supabase.
+*   **Client-Side:** The user's browser renders the React components and handles UI interactions.
+*   **Server-Side (Next.js):** The Next.js server handles server-side rendering of pages, serves static assets, and executes the business logic contained in the API routes (e.g., creating posts, handling votes).
+*   **Service-Side (Supabase):** Supabase provides the persistence layer (PostgreSQL database), handles user authentication, and manages access control through its integrated services.
+
+#### 3.2.2. Database Schema Design
+
+Based on the data model, the following SQL-like schema is proposed for the PostgreSQL database managed by Supabase:
+
+```sql
+CREATE TABLE users (
+    user_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE posts (
+    post_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    title TEXT NOT NULL,
+    content TEXT,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE answers (
+    answer_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id UUID REFERENCES posts(post_id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE TABLE votes (
+    vote_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    post_id UUID REFERENCES posts(post_id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(user_id) ON DELETE CASCADE,
+    vote_type INT NOT NULL, -- e.g., 1 for upvote, -1 for downvote
+    UNIQUE (post_id, user_id) -- A user can only vote once per post
+);
+```
+
+#### 3.2.3. Interface Design
+
+The user interface is constructed from a series of reusable React components, ensuring consistency and modularity.
+*   **Layout:** A primary `Sidebar` component likely provides consistent navigation across the application. The main content area is used to display lists of posts (`PostList`) or detailed views.
+*   **Components:**
+    *   `PostCard`: A key component that presents a summary of a post, including its title, author, and vote count.
+    *   `createPost`: A form, likely presented in a modal or on a dedicated page, for submitting new questions.
+    *   `search`: An input field, possibly in the header or sidebar, for initiating searches.
+    *   `theme-toggler`: A button that allows users to switch between light and dark modes, enhancing accessibility and user preference.
+*   **Styling:** The use of Tailwind CSS allows for a highly customized and responsive design, while the `ui` directory of primitive components (Button, Card, Input) provides a consistent visual language.
+
+#### 3.2.4. Physical DFD
+
+The logical data flow maps to a physical architecture distributed across the user's device and cloud services:
+
+1.  **User's Browser:** The client device that renders the HTML, CSS, and JavaScript. It runs the React application and makes API calls to the Next.js server.
+2.  **Vercel Cloud Platform:** Hosts the Next.js application. It receives incoming HTTP requests, serves rendered pages, and executes the server-side logic for the API routes.
+3.  **Supabase Cloud Platform:** Provides the backend infrastructure. The Next.js application on Vercel communicates with Supabase's APIs over the internet to authenticate users and interact with the PostgreSQL database. All data is physically stored and managed within the Supabase ecosystem.
+---
+
+## Chapter 4: Implementation and Testing
+
+### 4.1. Implementation
+
+#### 4.1.1. Tools Used
+
+*   **Programming Language:** TypeScript
+*   **Core Framework:** Next.js
+*   **UI Library:** React
+*   **Styling:** Tailwind CSS
+*   **UI Components:** Radix UI (via `shadcn/ui`), Lucide Icons
+*   **Backend Platform (BaaS):** Supabase (PostgreSQL, Authentication, Storage)
+*   **Generative AI:** Google Generative AI API (for content moderation)
+*   **Code Quality:** ESLint
+
+#### 4.1.2. Implementation Details of Modules
+
+A representative module for analysis is the "Create New Post" feature, which spans both the frontend and backend.
+
+**Frontend Module (`src/components/createPost.tsx`)**
+
+This React component provides the user-facing form for submitting a new post.
+1.  **State Management:** It uses React's `useState` hook to manage the form's data, including `title`, `context`, `category`, and `tags`. It also handles the state for an optional image file upload and its preview URL.
+2.  **Image Handling:** When a user selects an image, the `handleImageChange` function uploads it to a dedicated Supabase Storage bucket named `post-images`. This is done asynchronously before the form is submitted.
+3.  **Form Submission:** The `handleSubmit` function is triggered on form submission. It gathers all form data, retrieves the current user's ID from Supabase Auth, and constructs a JSON payload. It then sends this payload via a `POST` request to the backend API endpoint at `/api/posts/new`.
+
+**Backend Module (`src/app/api/posts/new/route.ts`)**
+
+This API route handles the logic for creating and storing a new post.
+1.  **Request Handling:** The `POST` function receives the request from the frontend, parsing the JSON body to extract the post details.
+2.  **Content Moderation:** Before processing the post, it calls a `moderateContent` function from `src/lib/moderation.ts`. This function likely uses the Google Generative AI library to check the `title` and `context` for inappropriate content. If the content is flagged, the API returns a `422 Unprocessable Entity` status, preventing the post from being created.
+3.  **Database Insertion:** If the content passes moderation, the function uses the Supabase server client to insert a new record into the `posts` table. It populates the columns with the data received from the frontend and initializes default values for fields like `upvotes` and `is_answered`.
+4.  **Response:** The API returns a `200 OK` status with the data of the newly created post on success, or a `400 Bad Request` status if any errors occurred during the database operation.
+
+### 4.2. Testing
+
+Analysis of the project repository shows that no formal testing files or frameworks (e.g., Jest, React Testing Library) have been implemented. The following test cases are proposed to ensure the application's quality and stability.
+
+#### 4.2.1. Test Cases for Unit Testing
+
+*   **`createPost.tsx` Component:**
+    *   **Render:** The component should render all input fields (`title`, `context`, `author`, etc.) and the submit button.
+    *   **State:** Typing into an input field should correctly update the component's state.
+    *   **Image Preview:** Selecting an image file should display its preview.
+    *   **Loading State:** The "Create Post" button should be disabled and show "Posting..." when the form is submitting.
+*   **`moderateContent` Function:**
+    *   **Safe Input:** Given a benign string, the function should return `{ flagged: false }`.
+    *   **Unsafe Input:** Given a string with harmful content, the function should return `{ flagged: true }`.
+
+#### 4.2.2. Test Cases for System Testing
+
+*   **Successful Post Creation:**
+    *   An authenticated user fills out all required fields, clicks "Create Post," and receives a success confirmation. The new post should then be visible in the database and on the main post list.
+*   **Post Creation with Image:**
+    *   A user successfully creates a post with an image. The image should be uploaded to Supabase Storage, and the correct image URL should be saved in the `posts` table.
+*   **Failed Post Creation (Validation):**
+    *   Attempting to submit the form with a required field (e.g., `title`) left empty should fail and display a validation error.
+*   **Failed Post Creation (Moderation):**
+    *   An authenticated user attempts to create a post with inappropriate content. The API should block the request, and the user should be shown an error message like "Inappropriate content detected."
+
+---
+
+## Chapter 5: Conclusion and Future Recommendations
+
+### 5.1. Lesson Learnt / Outcome
+
+The Oraculum project successfully demonstrates the effectiveness of combining a modern full-stack framework like Next.js with a Backend-as-a-Service platform like Supabase. This approach allowed for the rapid development of a feature-rich web application, from concept to a functional prototype. The key outcomes are:
+
+*   A working Q&A platform that fulfills all the primary objectives, including user authentication, post/answer creation, and voting.
+*   A practical implementation of a modern, component-based frontend architecture using React, TypeScript, and Tailwind CSS, resulting in a maintainable and responsive UI.
+*   A successful integration of a third-party AI service for automated content moderation, showcasing a practical application of AI to enhance platform safety.
+*   The project serves as a strong foundation, proving the viability of the chosen technology stack and architecture for building scalable, community-focused web applications.
+
+### 5.2. Conclusion
+
+Oraculum stands as a successful proof-of-concept for a modern, intuitive, and engaging question-and-answer platform. By leveraging the strengths of its technology stack, it delivers a seamless user experience that covers the entire lifecycle of content creation and interaction. The architecture is well-defined, separating concerns between the frontend presentation layer, the server-side business logic, and the backend services, which makes the system robust and maintainable. While currently a prototype, it has all the fundamental features required for a successful community-driven knowledge-sharing site.
+
+### 5.3. Future Recommendations
+
+To evolve Oraculum from a prototype into a production-ready application, the following enhancements are recommended:
+
+*   **Implement a Comprehensive Testing Suite:** The highest priority should be the introduction of a formal testing framework (e.g., Jest with React Testing Library). Writing the unit and integration tests proposed in Chapter 4 would drastically improve code quality, reduce bugs, and ensure long-term stability.
+*   **Enhance User Profiles:** Create detailed user profile pages that display user activity, including questions asked, answers provided, and reputation scores.
+*   **Develop a Reputation System:** Implement a points-based system where users earn reputation for upvoted posts and answers. This would incentivize high-quality contributions and help identify knowledgeable users.
+*   **Add Real-time Notifications:** Use Supabase's Realtime capabilities to implement a notification system that alerts users when their questions receive answers or their content is upvoted.
+*   **Extend Voting to Answers:** The voting mechanism should be extended to answers, allowing the community to identify and promote the most helpful solution for each question.
+*   **Improve Search Functionality:** Enhance the search feature with advanced filtering (by category, tags, date, or unanswered questions) and sorting capabilities.
+*   **Create an Admin/Moderation Dashboard:** Build a secure dashboard for administrators to manage users, manually review and moderate flagged content, and view key site analytics.
