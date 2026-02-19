@@ -47,11 +47,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    const formatted = data.map((answers) => ({
+    const formatted = data.map((answers ) => ({
       id: answers.id,
       content: answers.answer_text,
       user_id: answers.user_id,
-      username: answers.profiles.username,
+      profiles : {
+        username: answers.profiles.username,
+      },
       created_at: answers.created_at,
     }));
 
