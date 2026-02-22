@@ -51,9 +51,7 @@ export async function POST(req: Request) {
       id: answers.id,
       content: answers.answer_text,
       user_id: answers.user_id,
-      profiles: {
-        username: answers.profiles?.[0]?.username || "Unknown",
-      },
+      username: answers.profiles.username,
       created_at: answers.created_at,
     }));
 

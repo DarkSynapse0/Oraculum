@@ -19,6 +19,7 @@ import NotificationBell from "@/components/notificationBell";
 // 1. Import the new components
 import NotificationListener from "@/components/notificationListener";
 import { Toaster } from "@/components/ui/sonner";
+import { useRouter } from "next/navigation";
 
 type User = {
   id: string;
@@ -36,6 +37,7 @@ export default function DashboardLayout({
   const [user, setUser] = useState<User | null>(null);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     async function getProfile() {
@@ -173,7 +175,10 @@ export default function DashboardLayout({
                   <Button
                     variant="destructive"
                     className="w-full gap-2 h-10 font-semibold"
-                    onClick={() => supabase.auth.signOut()}
+                    onClick={() => {
+                      router.push("/");
+                      supabase.auth.signOut();
+                    }}
                   >
                     <LogOut size={16} /> Logout
                   </Button>
@@ -185,7 +190,7 @@ export default function DashboardLayout({
       </header>
 
       {/* PAGE WRAPPER */}
-      <div className="flex flex-1 pt-14 overflow-hidden">{children}</div>
+      <div className="flex flex-1 pt-14 px-0 overflow-hidden">{children}</div>
     </div>
   );
 }

@@ -18,8 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import ImagePreview from "@/components/ImagePreview"; // Ensure this uses a Portal
-
+import ImagePreview from "@/components/ImagePreview"; 
+import "../../../globals.css"
 /* ===================== TYPES ===================== */
 type User = { id: string; username: string; email: string; role: string };
 type Post = {
@@ -155,7 +155,7 @@ export default function ViewClient({ user }: { user: User }) {
   if (isLoading) return <ViewSkeleton />;
 
   return (
-    <div className="w-full overflow-y-scroll max-w-5xl mx-auto px-4 py-8 pb-32">
+    <div className="w-full overflow-y-scroll max-w-7xl no-scrollbar mx-auto px-3 py-2 pb-15">
       {/* 1. Header Navigation */}
       <nav className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
@@ -168,7 +168,9 @@ export default function ViewClient({ user }: { user: User }) {
             <ArrowLeft size={16} /> Discussions
           </Button>
           <ChevronRight size={14} className="opacity-40" />
-          <span className="text-foreground truncate max-w-[200px]">Thread</span>
+          <span className="text-foreground truncate max-w-[200px]">
+            {post?.title}
+          </span>
         </div>
         <Button variant="ghost" size="icon" className="h-8 w-8">
           <MoreHorizontal size={14} />
@@ -185,10 +187,15 @@ export default function ViewClient({ user }: { user: User }) {
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-foreground text-sm truncate">@{post?.author}</span>
+              <span className="font-semibold text-foreground text-sm truncate">
+                @{post?.author}
+              </span>
               <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock size={12} /> 
-                {post && formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
+                <Clock size={12} />
+                {post &&
+                  formatDistanceToNow(new Date(post.created_at), {
+                    addSuffix: true,
+                  })}
               </span>
             </div>
           </div>
@@ -202,7 +209,7 @@ export default function ViewClient({ user }: { user: User }) {
         </div>
 
         {post?.image_url && (
-          <div 
+          <div
             className="relative aspect-video w-full overflow-hidden rounded-xl border border-border/60 bg-muted/30 cursor-zoom-in group"
             onClick={() => {
               setPreviewImage(post.image_url!);
@@ -224,7 +231,7 @@ export default function ViewClient({ user }: { user: User }) {
       {/* 3. Answers Section */}
       <section className="space-y-8">
         <h2 className="text-lg font-bold flex items-center gap-2">
-          Discussion 
+          Discussion
           <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
             {answers.length}
           </span>
@@ -254,13 +261,20 @@ export default function ViewClient({ user }: { user: User }) {
         {/* Answers List */}
         <div className="space-y-6">
           {answers.map((answer) => (
-            <div key={answer.id} className="flex flex-col gap-4 p-5 rounded-xl border border-border/40 bg-card/30">
+            <div
+              key={answer.id}
+              className="flex flex-col gap-4 p-5 rounded-xl border border-border/40 bg-card/30"
+            >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm">
-                  <span className="font-bold text-foreground">@{answer.username}</span>
+                  <span className="font-bold text-foreground">
+                    @{answer.username}
+                  </span>
                   <span className="text-muted-foreground/40">•</span>
                   <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(answer.created_at), { addSuffix: true })}
+                    {formatDistanceToNow(new Date(answer.created_at), {
+                      addSuffix: true,
+                    })}
                   </span>
                 </div>
               </div>
@@ -273,10 +287,16 @@ export default function ViewClient({ user }: { user: User }) {
                   variant="ghost"
                   size="sm"
                   className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() => setOpenReplyBox(openReplyBox === answer.id ? null : answer.id)}
+                  onClick={() =>
+                    setOpenReplyBox(
+                      openReplyBox === answer.id ? null : answer.id,
+                    )
+                  }
                 >
                   <MessageSquare size={14} />
-                  Reply {replies[answer.id]?.length > 0 && `(${replies[answer.id].length})`}
+                  Reply{" "}
+                  {replies[answer.id]?.length > 0 &&
+                    `(${replies[answer.id].length})`}
                 </Button>
               </div>
 
@@ -284,14 +304,21 @@ export default function ViewClient({ user }: { user: User }) {
               {replies[answer.id]?.length > 0 && (
                 <div className="ml-4 pl-4 border-l border-border/60 space-y-4 pt-2">
                   {replies[answer.id].map((reply) => (
-                    <div key={reply.id} className="flex flex-col gap-1 animate-in fade-in duration-300">
+                    <div
+                      key={reply.id}
+                      className="flex flex-col gap-1 animate-in fade-in duration-300"
+                    >
                       <div className="flex items-center gap-2 text-[11px]">
                         <span className="font-bold">@{reply.username}</span>
                         <span className="text-muted-foreground/60">
-                          {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
+                          {formatDistanceToNow(new Date(reply.created_at), {
+                            addSuffix: true,
+                          })}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{reply.content}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {reply.content}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -304,13 +331,28 @@ export default function ViewClient({ user }: { user: User }) {
                     placeholder="Reply to this thread..."
                     className="h-20 text-xs bg-muted/40 border-none shadow-none focus-visible:ring-0"
                     value={replyText[answer.id] || ""}
-                    onChange={(e) => setReplyText((prev) => ({ ...prev, [answer.id]: e.target.value }))}
+                    onChange={(e) =>
+                      setReplyText((prev) => ({
+                        ...prev,
+                        [answer.id]: e.target.value,
+                      }))
+                    }
                   />
                   <div className="flex justify-end gap-2">
-                    <Button variant="ghost" size="sm" className="h-8 text-xs px-3" onClick={() => setOpenReplyBox(null)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 text-xs px-3"
+                      onClick={() => setOpenReplyBox(null)}
+                    >
                       Cancel
                     </Button>
-                    <Button size="sm" className="h-8 text-xs px-4" onClick={() => handlePostReply(answer.id)} disabled={!replyText[answer.id]?.trim()}>
+                    <Button
+                      size="sm"
+                      className="h-8 text-xs px-4"
+                      onClick={() => handlePostReply(answer.id)}
+                      disabled={!replyText[answer.id]?.trim()}
+                    >
                       Send
                     </Button>
                   </div>
@@ -334,7 +376,7 @@ export default function ViewClient({ user }: { user: User }) {
 
 function ViewSkeleton() {
   return (
-    <div className="min-w-6xl mx-auto px-4 py-8 space-y-10">
+    <div className="lg:min-w-7xl w-full mx-auto px-4 py-8 space-y-10">
       <div className="space-y-4">
         <Skeleton className="h-4 w-32" />
         <div className="flex gap-4 items-center">

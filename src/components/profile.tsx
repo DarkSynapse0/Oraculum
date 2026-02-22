@@ -51,6 +51,8 @@ export default function Profile({
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [dbUsername, setDbUsername] = useState<string | null>(null); // New state for DB username
   const [totalPosts, setTotalPosts] = useState<number>(0);
+  const [totalAns, setTotalAns] = useState<number>(0);
+
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -58,32 +60,39 @@ export default function Profile({
     const loadProfileData = async () => {
       setLoading(true);
       try {
-        const [profileRes, countRes, postsRes] = await Promise.all([
-          // 1. Fetch BOTH avatar and username from profiles table
-          supabase
-            .from("profiles")
-            .select("avatar_url, username")
-            .eq("id", userId)
-            .single(),
-          // 2. Count posts
-          supabase
-            .from("posts")
-            .select("id", { count: "exact", head: true })
-            .eq("user_id", userId),
-          // 3. Fetch posts
-          supabase
-            .from("posts")
-            .select("*")
-            .eq("user_id", userId)
-            .order("created_at", { ascending: false }),
-        ]);
+        const [profileRes, postCountRes, postsRes, totalAns] =
+          await Promise.all([
+            // 1. Fetch BOTH avatar and username from profiles table
+            supabase
+              .from("profiles")
+              .select("avatar_url, username")
+              .eq("id", userId)
+              .single(),
+            // 2. Count posts
+            supabase
+              .from("posts")
+              .select("id", { count: "exact", head: true })
+              .eq("user_id", userId),
+            // 3. Fetch posts
+            supabase
+              .from("posts")
+              .select("*")
+              .eq("user_id", userId)
+              .order("created_at", { ascending: false }),
+
+            supabase
+              .from("answers")
+              .select("*", { count: "exact", head: true }) // head:true = no data, only count
+              .eq("user_id", userId),
+          ]);
 
         if (profileRes.data) {
           setAvatarUrl(profileRes.data.avatar_url);
           setDbUsername(profileRes.data.username); // Set username from DB
         }
 
-        setTotalPosts(countRes.count || 0);
+        setTotalPosts(postCountRes.count || 0);
+        setTotalAns(totalAns.count || 0);
         if (postsRes.data) setUserPosts(postsRes.data);
       } catch (err) {
         console.error("Profile Load Error:", err);
@@ -155,7 +164,7 @@ export default function Profile({
         />
         <StatItem
           label="Answers"
-          value="--"
+          value={totalAns}
           icon={<MessageSquare size={14} />}
           loading={loading}
         />

@@ -75,9 +75,9 @@ export default function RecommendationPage() {
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-4 py-8 md:py-12 pb-24">
+    <div className="w-full max-w-3xl mx-auto lg:px-0 px-3 py-4 pb-24">
       {/* System Header */}
-      <header className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <header className="mb-10 flex px-2 flex-col md:flex-row md:items-end justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2 text-primary font-mono text-[10px] uppercase tracking-[0.2em] font-bold">
             <span className="relative flex h-2 w-2">

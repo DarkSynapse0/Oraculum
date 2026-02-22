@@ -80,7 +80,7 @@ IMPORTANT RULES:
 }
 
 export async function analyzeComment(
-  text: string
+  text: string,
 ): Promise<AnalyzerOutput | { error: string }> {
   try {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
@@ -101,4 +101,22 @@ export async function analyzeComment(
     console.error("Analyzer failed:", err.message);
     return { error: err.message };
   }
+}
+
+export async function askAcademicAssistant(question: string): Promise<string> {
+  const model = genAI.getGenerativeModel({
+    model: "gemini-2.5-flash",
+  });
+
+  const prompt = `
+You are Oraculum AI, an academic assistant.
+Answer clearly, concisely, and academically.
+If the question is unclear, ask for clarification.
+
+Question:
+${question}
+`;
+
+  const result = await model.generateContent(prompt);
+  return result.response.text();
 }

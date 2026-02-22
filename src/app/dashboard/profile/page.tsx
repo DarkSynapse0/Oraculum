@@ -173,18 +173,10 @@ const ProfileEditor: React.FC = () => {
             label="Professional Role"
             icon={<Fingerprint className="h-3.5 w-3.5" />}
           >
-            {isEditing ? (
-              <Input
-                name="role"
-                value={tempProfile.role}
-                onChange={handleChange}
-                className="h-10 bg-background"
-              />
-            ) : (
               <p className="text-sm font-medium py-2.5 px-3 bg-muted/30 rounded-md border border-transparent">
                 {profile.role}
               </p>
-            )}
+          
           </FormField>
 
           <FormField

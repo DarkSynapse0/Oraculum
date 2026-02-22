@@ -12,6 +12,8 @@ import PostList from "@/components/PostList";
 import SuggestedUsers from "@/components/SuggestedUsers";
 import SearchPage from "@/components/search";
 import RecommendationPage from "@/components/recommendation";
+import { useRouter } from "next/navigation";
+import AIChatWidget from "@/components/AIChatWidget";
 
 type Tab = "home" | "posts" | "search" | "create" | "profile";
 
@@ -20,8 +22,21 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>("home");
   const [user, setUser] = useState<any>(null);
 
+  const checkSession = async () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const router = useRouter();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) router.push("/");
+  }
+
+  checkSession();
+
   useEffect(() => {
     async function load() {
+
       const {
         data: { user },
       } = await supabase.auth.getUser();
@@ -44,6 +59,7 @@ export default function DashboardPage() {
 
   return (
     <div className="flex w-full overflow-hidden">
+      <AIChatWidget userId={user.id} />
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-border/50 bg-muted/10">
         <nav className="flex-1 p-4 space-y-1">
@@ -73,30 +89,21 @@ export default function DashboardPage() {
 
       {/* CONTENT AREA */}
       <main className="flex-1 overflow-y-auto bg-slate-50/20 dark:bg-transparent">
-        <div className="w-full mx-auto p-4 lg:p-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div className="w-full mx-auto lg:p-5">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             <div
               className={cn(
-                "col-span-1 lg:col-span-8 space-y-6",
+                "col-span-1 lg:col-span-8 space-y-2",
                 (activeTab === "profile" || activeTab === "search") &&
                   "lg:col-span-12",
               )}
             >
-              <div className="flex flex-col gap-1 mb-6">
-                <h1 className="text-xl font-bold tracking-tight capitalize">
-                  {activeTab}
-                </h1>
-                <p className="text-xs text-muted-foreground border-b">
-                  Nexus / Dashboard / {activeTab}
-                </p>
-              </div>
-
               {renderTab(activeTab, user)}
             </div>
 
             {/* PERSISTENT SIDEBAR ONLY ON FEED */}
             {activeTab === "home" && (
-              <aside className="hidden lg:block lg:col-span-4 space-y-6">
+              <aside className="hidden lg:sticky top-10 lg:block lg:col-span-4 space-y-6">
                 <section className="bg-card border border-border/50 rounded-xl p-5">
                   <h3 className="text-sm font-bold mb-4">Suggested Users</h3>
                   <SuggestedUsers />

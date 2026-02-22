@@ -15,7 +15,7 @@ export default function HomeClient() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b">
+      <header className="border-b sticky top-0 bg-background">
         <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
           <span className="text-lg font-semibold tracking-tight">ORACULUM</span>
 
@@ -28,9 +28,9 @@ export default function HomeClient() {
       </header>
 
       {/* Main */}
-      <main className="mx-auto max-w-7xl px-6">
+      <main className="mx-auto max-w-7xl px-6 flex flex-col items-start justify-center">
         {/* Hero */}
-        <section className="py-24">
+        <section className="py-10">
           <div className="max-w-2xl">
             <h1 className="text-3xl font-semibold leading-tight tracking-tight">
               A better way to ask questions and learn together.
@@ -108,8 +108,8 @@ export default function HomeClient() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t">
-        <div className="mx-auto h-14 max-w-7xl px-6 flex items-center text-sm text-muted-foreground">
+      <footer className="border-t absolute w-full items-center justify-center flex lg:bottom-0">
+        <div className="fmx-auto h-14 max-w-7xl px-6 flex items-center text-sm text-muted-foreground">
           © {new Date().getFullYear()} Oraculum. Built for academic excellence.
         </div>
       </footer>
