@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
@@ -51,7 +52,7 @@ export async function POST(req: Request) {
       id: answers.id,
       content: answers.answer_text,
       user_id: answers.user_id,
-      username: answers.profiles.username,
+      username: (answers.profiles as any).username,
       created_at: answers.created_at,
     }));
 
