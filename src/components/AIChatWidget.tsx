@@ -104,10 +104,9 @@ export default function AIChatWidget({ userId }: { userId: string }) {
     <div className="fixed lg:bottom-6 bottom-18 right-6 z-[100] flex flex-col items-end">
       {/* Chat Window */}
       <div
-        className={cn(
-          "mb-4 w-[380px] h-[580px] rounded-2xl border bg-background flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right transform",
+        className={cn("hidden",
           isOpen
-            ? "scale-100 opacity-100 translate-y-0"
+            ? "mb-4 rounded-2xl border bg-background flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right transform w-[380px] h-[580px] scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 translate-y-8 pointer-events-none",
         )}
       >

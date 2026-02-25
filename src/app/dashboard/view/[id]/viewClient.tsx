@@ -18,8 +18,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import ImagePreview from "@/components/ImagePreview"; 
-import "../../../globals.css"
+import ImagePreview from "@/components/ImagePreview";
+import "../../../globals.css";
 /* ===================== TYPES ===================== */
 type User = { id: string; username: string; email: string; role: string };
 type Post = {
@@ -95,7 +95,7 @@ export default function ViewClient({ user }: { user: User }) {
           });
           const json = await res.json();
           repliesMap[ans.id] = json.data || [];
-        })
+        }),
       );
       setReplies(repliesMap);
     } catch (err) {
@@ -116,7 +116,11 @@ export default function ViewClient({ user }: { user: User }) {
       const res = await fetch("/api/answers/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId: id, content: answerText, userId: user.id }),
+        body: JSON.stringify({
+          postId: id,
+          content: answerText,
+          userId: user.id,
+        }),
       });
       if (res.ok) {
         const json = await res.json();
@@ -155,9 +159,9 @@ export default function ViewClient({ user }: { user: User }) {
   if (isLoading) return <ViewSkeleton />;
 
   return (
-    <div className="w-full overflow-y-scroll max-w-7xl no-scrollbar mx-auto px-3 py-2 pb-15">
+    <div className="w-full overflow-y-scroll max-w-8xl no-scrollbar mx-auto px-3 lg:py-2  pb-15">
       {/* 1. Header Navigation */}
-      <nav className="mb-8 flex items-center justify-between">
+      <nav className="mb-8 py-5 z-90 flex top-0 bg-background lg:top-5 sticky  items-center justify-between">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
           <Button
             variant="ghost"
@@ -177,191 +181,192 @@ export default function ViewClient({ user }: { user: User }) {
         </Button>
       </nav>
 
-      {/* 2. Main Post Content */}
-      <article className="space-y-6">
-        <header className="space-y-4">
-          <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10 border border-border/50">
-              <AvatarFallback className="bg-primary/10 text-primary font-bold">
-                {post?.author?.[0].toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex flex-col min-w-0">
-              <span className="font-semibold text-foreground text-sm truncate">
-                @{post?.author}
-              </span>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock size={12} />
-                {post &&
-                  formatDistanceToNow(new Date(post.created_at), {
-                    addSuffix: true,
-                  })}
-              </span>
-            </div>
-          </div>
-          <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight">
-            {post?.title}
-          </h1>
-        </header>
-
-        <div className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
-          {post?.context}
-        </div>
-
-        {post?.image_url && (
-          <div
-            className="relative aspect-video w-full overflow-hidden rounded-xl border border-border/60 bg-muted/30 cursor-zoom-in group"
-            onClick={() => {
-              setPreviewImage(post.image_url!);
-              setPreviewOpen(true);
-            }}
-          >
-            <Image
-              src={post.image_url}
-              alt="Post visual content"
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-[1.01]"
-            />
-          </div>
-        )}
-      </article>
-
-      <Separator className="my-10 opacity-50" />
-
-      {/* 3. Answers Section */}
-      <section className="space-y-8">
-        <h2 className="text-lg font-bold flex items-center gap-2">
-          Discussion
-          <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-            {answers.length}
-          </span>
-        </h2>
-
-        {/* Primary Answer Input */}
-        <div className="bg-card border border-border/60 rounded-xl p-4 shadow-sm focus-within:border-primary/50 transition-colors">
-          <Textarea
-            placeholder="Share your perspective..."
-            className="bg-transparent border-none shadow-none resize-none focus-visible:ring-0 min-h-[100px] text-sm p-2"
-            value={answerText}
-            onChange={(e) => setAnswerText(e.target.value)}
-          />
-          <div className="flex justify-end pt-3 border-t border-border/40 mt-3">
-            <Button
-              size="sm"
-              disabled={!answerText.trim() || isSubmitting}
-              onClick={handlePostAnswer}
-              className="gap-2 font-semibold"
-            >
-              {isSubmitting ? "Syncing..." : "Post Answer"}
-              <Send size={14} />
-            </Button>
-          </div>
-        </div>
-
-        {/* Answers List */}
-        <div className="space-y-6">
-          {answers.map((answer) => (
-            <div
-              key={answer.id}
-              className="flex flex-col gap-4 p-5 rounded-xl border border-border/40 bg-card/30"
-            >
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="font-bold text-foreground">
-                    @{answer.username}
-                  </span>
-                  <span className="text-muted-foreground/40">•</span>
-                  <span className="text-xs text-muted-foreground">
-                    {formatDistanceToNow(new Date(answer.created_at), {
+      {/* 2. Main Post Content & 3. Answers Section Container */}
+      <div className="flex flex-col md:flex-row w-full gap-8 px-4 md:px-6 max-w-8xl mx-auto items-start">
+        {/* Left Column: Main Post Content (Sticky) */}
+        <article className="w-full md:w-1/2  space-y-6">
+          <header className="space-y-4">
+            <div className="flex items-center gap-3">
+              <Avatar className="h-10 w-10 border border-border/50">
+                <AvatarFallback className="bg-primary/10 text-primary font-bold">
+                  {post?.author?.charAt(0).toUpperCase() || "?"}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex flex-col min-w-0">
+                <span className="font-semibold text-foreground text-sm truncate">
+                  @{post?.author}
+                </span>
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock size={12} />
+                  {post?.created_at &&
+                    formatDistanceToNow(new Date(post.created_at), {
                       addSuffix: true,
                     })}
-                  </span>
-                </div>
+                </span>
               </div>
-              <div className="text-sm leading-relaxed text-foreground/90 italic border-l-2 border-primary/10 pl-4">
-                {answer.content}
-              </div>
+            </div>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground leading-tight">
+              {post?.title}
+            </h1>
+          </header>
 
-              <div className="flex items-center gap-4 pt-1">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-primary transition-colors"
-                  onClick={() =>
-                    setOpenReplyBox(
-                      openReplyBox === answer.id ? null : answer.id,
-                    )
-                  }
-                >
-                  <MessageSquare size={14} />
-                  Reply{" "}
-                  {replies[answer.id]?.length > 0 &&
-                    `(${replies[answer.id].length})`}
-                </Button>
-              </div>
+          <div className="text-[15px] leading-relaxed text-foreground/90 whitespace-pre-wrap">
+            {post?.context}
+          </div>
 
-              {/* Threaded Replies */}
-              {replies[answer.id]?.length > 0 && (
-                <div className="ml-4 pl-4 border-l border-border/60 space-y-4 pt-2">
-                  {replies[answer.id].map((reply) => (
-                    <div
-                      key={reply.id}
-                      className="flex flex-col gap-1 animate-in fade-in duration-300"
-                    >
-                      <div className="flex items-center gap-2 text-[11px]">
-                        <span className="font-bold">@{reply.username}</span>
-                        <span className="text-muted-foreground/60">
-                          {formatDistanceToNow(new Date(reply.created_at), {
-                            addSuffix: true,
-                          })}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {reply.content}
-                      </p>
-                    </div>
-                  ))}
-                </div>
-              )}
+          {post?.image_url && (
+            <div
+              className="relative aspect-video w-full overflow-hidden rounded-xl border border-border/60 bg-muted/30 cursor-zoom-in group"
+              onClick={() => {
+                setPreviewImage(post.image_url!);
+                setPreviewOpen(true);
+              }}
+            >
+              <Image
+                src={post.image_url}
+                alt="Post visual content"
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+              />
+            </div>
+          )}
+        </article>
 
-              {/* Nested Reply Input */}
-              {openReplyBox === answer.id && (
-                <div className="ml-4 pl-4 border-l border-primary/30 space-y-3 pt-2 animate-in slide-in-from-top-2 duration-200">
-                  <Textarea
-                    placeholder="Reply to this thread..."
-                    className="h-20 text-xs bg-muted/40 border-none shadow-none focus-visible:ring-0"
-                    value={replyText[answer.id] || ""}
-                    onChange={(e) =>
-                      setReplyText((prev) => ({
-                        ...prev,
-                        [answer.id]: e.target.value,
-                      }))
-                    }
-                  />
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-8 text-xs px-3"
-                      onClick={() => setOpenReplyBox(null)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      size="sm"
-                      className="h-8 text-xs px-4"
-                      onClick={() => handlePostReply(answer.id)}
-                      disabled={!replyText[answer.id]?.trim()}
-                    >
-                      Send
-                    </Button>
+        {/* Right Column: Answers Section (Scrollable) */}
+        <section className="w-full md:w-1/2 space-y-8 pb-20">
+          <h2 className="text-lg font-bold flex items-center gap-2">
+            Discussion
+            <span className="text-xs font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+              {answers.length}
+            </span>
+          </h2>
+
+          {/* Primary Answer Input */}
+          <div className="bg-card border border-border/60 rounded-xl p-4 shadow-sm focus-within:border-primary/50 transition-colors">
+            <Textarea
+              placeholder="Share your perspective..."
+              className="bg-transparent border-none shadow-none resize-none focus-visible:ring-0 min-h-[100px] text-sm p-2"
+              value={answerText}
+              onChange={(e) => setAnswerText(e.target.value)}
+            />
+            <div className="flex justify-end pt-3 border-t border-border/40 mt-3">
+              <Button
+                size="sm"
+                disabled={!answerText.trim() || isSubmitting}
+                onClick={handlePostAnswer}
+                className="gap-2 font-semibold"
+              >
+                {isSubmitting ? "Syncing..." : "Post Answer"}
+                <Send size={14} />
+              </Button>
+            </div>
+          </div>
+
+          {/* Answers List */}
+          <div className="space-y-6">
+            {answers.map((answer) => (
+              <div
+                key={answer.id}
+                className="flex flex-col gap-4 p-5 rounded-xl border border-border/40 bg-card/30"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="font-bold text-foreground">
+                      @{answer.username}
+                    </span>
+                    <span className="text-muted-foreground/40">•</span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDistanceToNow(new Date(answer.created_at), {
+                        addSuffix: true,
+                      })}
+                    </span>
                   </div>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
+                <div className="text-sm leading-relaxed text-foreground/90 italic border-l-2 border-primary/10 pl-4">
+                  {answer.content}
+                </div>
+
+                <div className="flex items-center gap-4 pt-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() =>
+                      setOpenReplyBox(
+                        openReplyBox === answer.id ? null : answer.id,
+                      )
+                    }
+                  >
+                    <MessageSquare size={14} />
+                    Reply{" "}
+                    {replies[answer.id]?.length > 0 &&
+                      `(${replies[answer.id].length})`}
+                  </Button>
+                </div>
+
+                {/* Threaded Replies */}
+                {replies[answer.id]?.length > 0 && (
+                  <div className="ml-4 pl-4 border-l border-border/60 space-y-4 pt-2">
+                    {replies[answer.id].map((reply) => (
+                      <div
+                        key={reply.id}
+                        className="flex flex-col gap-1 animate-in fade-in duration-300"
+                      >
+                        <div className="flex items-center gap-2 text-[11px]">
+                          <span className="font-bold">@{reply.username}</span>
+                          <span className="text-muted-foreground/60">
+                            {formatDistanceToNow(new Date(reply.created_at), {
+                              addSuffix: true,
+                            })}
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          {reply.content}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Nested Reply Input */}
+                {openReplyBox === answer.id && (
+                  <div className="ml-4 pl-4 border-l border-primary/30 space-y-3 pt-2 animate-in slide-in-from-top-2 duration-200">
+                    <Textarea
+                      placeholder="Reply to this thread..."
+                      className="h-20 text-xs bg-muted/40 border-none shadow-none focus-visible:ring-0"
+                      value={replyText[answer.id] || ""}
+                      onChange={(e) =>
+                        setReplyText((prev) => ({
+                          ...prev,
+                          [answer.id]: e.target.value,
+                        }))
+                      }
+                    />
+                    <div className="flex justify-end gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 text-xs px-3"
+                        onClick={() => setOpenReplyBox(null)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="h-8 text-xs px-4"
+                        onClick={() => handlePostReply(answer.id)}
+                        disabled={!replyText[answer.id]?.trim()}
+                      >
+                        Send
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
       {/* 4. Global Image Preview */}
       <ImagePreview

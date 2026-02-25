@@ -13,7 +13,6 @@ import SuggestedUsers from "@/components/SuggestedUsers";
 import SearchPage from "@/components/search";
 import RecommendationPage from "@/components/recommendation";
 import { useRouter } from "next/navigation";
-import AIChatWidget from "@/components/AIChatWidget";
 
 type Tab = "home" | "posts" | "search" | "create" | "profile";
 
@@ -59,7 +58,6 @@ export default function DashboardPage() {
 
   return (
     <div className="flex w-full overflow-hidden">
-      <AIChatWidget userId={user.id} />
       {/* DESKTOP SIDEBAR */}
       <aside className="hidden lg:flex w-64 flex-col border-r border-border/50 bg-muted/10">
         <nav className="flex-1 p-4 space-y-1">

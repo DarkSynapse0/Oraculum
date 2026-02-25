@@ -1,31 +1,40 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextResponse } from "next/server";
-import { analyzeComment, askAcademicAssistant } from "@/lib/analyzer"; // moderation
-import { createClient } from "@/utils/supabase/client";
+import { analyzeComment, askAcademicAssistant } from "@/lib/analyzer";
+import { createClient } from "@/utils/supabase/server";
 
 const COST_PER_QUESTION = 10;
 
 export async function POST(req: Request) {
   try {
-    const { message, userId } = await req.json();
+    const supabase = await createClient();
 
-    if (!message || !userId) {
-      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const supabase = createClient();
+    const { message } = await req.json();
+
+    if (!message || typeof message !== "string" || !message.trim()) {
+      return NextResponse.json({ error: "Invalid message" }, { status: 400 });
+    }
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("id, reputation_points")
-      .eq("id", userId)
+      .select("reputation_points")
+      .eq("id", user.id)
       .single();
 
     if (profileError || !profile) {
       return NextResponse.json({ error: "Profile not found" }, { status: 404 });
     }
 
-    if (profile.reputation_points < COST_PER_QUESTION) {
+    if ((profile.reputation_points ?? 0) < COST_PER_QUESTION) {
       return NextResponse.json(
         { error: "Not enough reputation points" },
         { status: 403 },
@@ -48,7 +57,7 @@ export async function POST(req: Request) {
     let aiReply: string;
     try {
       aiReply = await askAcademicAssistant(message);
-    } catch (err: any) {
+    } catch (err) {
       console.error("AI assistant failed:", err);
       return NextResponse.json(
         { error: "AI service temporarily unavailable." },
@@ -56,12 +65,12 @@ export async function POST(req: Request) {
       );
     }
 
+    const newReputation = (profile.reputation_points ?? 0) - COST_PER_QUESTION;
+
     const { error: updateError } = await supabase
       .from("profiles")
-      .update({
-        reputation_points: profile.reputation_points - COST_PER_QUESTION,
-      })
-      .eq("id", userId);
+      .update({ reputation_points: newReputation })
+      .eq("id", user.id);
 
     if (updateError) {
       console.error("Failed to deduct reputation:", updateError);
@@ -71,8 +80,11 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json({ reply: aiReply });
-  } catch (err: any) {
+    return NextResponse.json({
+      reply: aiReply,
+      reputation: newReputation,
+    });
+  } catch (err) {
     console.error("Unexpected error:", err);
     return NextResponse.json(
       { error: "Internal server error" },

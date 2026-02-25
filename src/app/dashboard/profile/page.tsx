@@ -18,8 +18,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { createClient } from "@/utils/supabase/client";
 
 interface UserProfile {
+  id: string;
   username: string;
   role: string;
   created_at: string;
@@ -236,7 +238,14 @@ const ProfileEditor: React.FC = () => {
             Once you delete your account, there is no going back. Please be
             certain.
           </p>
-          <Button variant="destructive" size="sm" className="h-8 font-bold">
+          <Button variant="destructive" size="sm" onClick={async () => {
+            const supabase = createClient();
+            
+            (supabase).auth.admin.deleteUser(
+              profile.id,
+              true
+            );
+          }} className="h-8 cursor-pointer font-bold">
             Delete Account
           </Button>
         </section>

@@ -11,7 +11,6 @@ import {
   FileText,
   Award,
   MessageSquare,
-  User,
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import PostCard from "./PostCard";
@@ -49,62 +48,74 @@ export default function Profile({
   const supabase = createClient();
 
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [dbUsername, setDbUsername] = useState<string | null>(null); // New state for DB username
+  const [dbUsername, setDbUsername] = useState<string | null>(null);
   const [totalPosts, setTotalPosts] = useState<number>(0);
   const [totalAns, setTotalAns] = useState<number>(0);
-
+  const [totalRep, setTotalRep] = useState<number>(0);
   const [userPosts, setUserPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    if (!userId) return;
+
     const loadProfileData = async () => {
       setLoading(true);
+
       try {
-        const [profileRes, postCountRes, postsRes, totalAns] =
+        const [profileRes, postCountRes, postsRes, answersCountRes] =
           await Promise.all([
-            // 1. Fetch BOTH avatar and username from profiles table
+            // PROFILE (avatar + username + reputation)
             supabase
               .from("profiles")
-              .select("avatar_url, username")
+              .select("avatar_url, username, reputation_points")
               .eq("id", userId)
               .single(),
-            // 2. Count posts
+
+            // POSTS COUNT
             supabase
               .from("posts")
               .select("id", { count: "exact", head: true })
               .eq("user_id", userId),
-            // 3. Fetch posts
+
+            // POSTS LIST
             supabase
               .from("posts")
               .select("*")
               .eq("user_id", userId)
               .order("created_at", { ascending: false }),
 
+            // ANSWERS COUNT
             supabase
               .from("answers")
-              .select("*", { count: "exact", head: true }) // head:true = no data, only count
+              .select("id", { count: "exact", head: true })
               .eq("user_id", userId),
           ]);
 
+        // ---- PROFILE DATA ----
         if (profileRes.data) {
           setAvatarUrl(profileRes.data.avatar_url);
-          setDbUsername(profileRes.data.username); // Set username from DB
+          setDbUsername(profileRes.data.username);
+          setTotalRep(profileRes.data.reputation_points ?? 0);
         }
 
-        setTotalPosts(postCountRes.count || 0);
-        setTotalAns(totalAns.count || 0);
-        if (postsRes.data) setUserPosts(postsRes.data);
-      } catch (err) {
-        console.error("Profile Load Error:", err);
+        // ---- COUNTS ----
+        setTotalPosts(postCountRes.count ?? 0);
+        setTotalAns(answersCountRes.count ?? 0);
+
+        // ---- POSTS ----
+        if (postsRes.data) {
+          setUserPosts(postsRes.data);
+        }
+      } catch (error) {
+        console.error("Profile Load Error:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    if (userId) loadProfileData();
+    loadProfileData();
   }, [supabase, userId]);
 
-  // Determine the display name (DB first, then Prop, then fallback)
   const displayName = dbUsername || user.username || "User";
 
   return (
@@ -170,7 +181,7 @@ export default function Profile({
         />
         <StatItem
           label="Reputation"
-          value="--"
+          value={totalRep}
           icon={<Award size={14} />}
           loading={loading}
         />
@@ -223,8 +234,6 @@ export default function Profile({
     </div>
   );
 }
-
-// --- Internal Helpers ---
 
 function StatItem({ label, value, icon, loading }: any) {
   return (

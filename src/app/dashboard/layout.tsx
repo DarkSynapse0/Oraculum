@@ -20,6 +20,7 @@ import NotificationBell from "@/components/notificationBell";
 import NotificationListener from "@/components/notificationListener";
 import { Toaster } from "@/components/ui/sonner";
 import { useRouter } from "next/navigation";
+import AIChatWidget from "@/components/AIChatWidget";
 
 type User = {
   id: string;
@@ -86,7 +87,7 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex flex-col h-screen bg-background">
+    <div className="flex z-100 flex-col h-screen bg-background">
       {user?.id && <NotificationListener userId={user.id} />}
       <Toaster position="bottom-right" expand={false} richColors />
 
@@ -191,6 +192,10 @@ export default function DashboardLayout({
 
       {/* PAGE WRAPPER */}
       <div className="flex flex-1 pt-14 px-0 overflow-hidden">{children}</div>
+      <div>
+
+      {user?.id && <AIChatWidget userId={user?.id} />}
+      </div>
     </div>
   );
 }
