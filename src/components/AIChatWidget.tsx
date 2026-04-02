@@ -24,7 +24,7 @@ const ChatHeader = ({ onClose }: { onClose: () => void }) => (
       </div>
       <div>
         <h3 className="text-[11px] font-bold uppercase tracking-widest leading-none">
-          Galaxy Assistant
+          Oraculum Assistant
         </h3>
         <div className="flex items-center gap-1.5 mt-1.5">
           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
@@ -104,7 +104,8 @@ export default function AIChatWidget({ userId }: { userId: string }) {
     <div className="fixed lg:bottom-6 bottom-18 right-6 z-[100] flex flex-col items-end">
       {/* Chat Window */}
       <div
-        className={cn("hidden",
+        className={cn(
+          "hidden",
           isOpen
             ? "mb-4 rounded-2xl border bg-background flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right transform w-[380px] h-[580px] scale-100 opacity-100 translate-y-0"
             : "scale-95 opacity-0 translate-y-8 pointer-events-none",
@@ -124,11 +125,12 @@ export default function AIChatWidget({ userId }: { userId: string }) {
               </div>
               <div>
                 <h4 className="text-sm font-boldtracking-tight">
-                  AI Bookstore Assistant
+                  AI-Powered Academic Assistant
                 </h4>
                 <p className="text-xs text-zinc-500 mt-1 px-12">
-                  Search the catalog, check inventory, or get reading
-                  recommendations.
+                  Consult Oraculum AI chat assistant that provides instant,
+                  contextually relevant answers to academic queries with a
+                  reputation-based access control
                 </p>
               </div>
             </div>
@@ -174,7 +176,7 @@ export default function AIChatWidget({ userId }: { userId: string }) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder="Ask Galaxy AI..."
+              placeholder="Ask Oraculum AI..."
               className="w-full bg-zinc-900 border-transparent border rounded-xl py-3 pl-4 pr-12 text-sm focus:border-zinc-100 focus:ring-4 focus:ring-zinc-900/5 transition-all outline-none placeholder:text-zinc-400"
             />
             <button

@@ -47,6 +47,33 @@ export async function POST(req: Request) {
 
     if (postError) throw postError;
 
+    // 2.5 Increase user reputation (+10)
+
+    // Step 1: Get current reputation
+    const { data: profileData, error: fetchError } = await (await supabase)
+      .from("profiles")
+      .select("reputation_points")
+      .eq("id", user_id)
+      .single();
+
+    if (fetchError) {
+      console.error("Failed to fetch reputation:", fetchError.message);
+    } else {
+      // Step 2: Update reputation
+      const { error: updateError } = await (
+        await supabase
+      )
+        .from("profiles")
+        .update({
+          reputation_points: (profileData?.reputation_points || 0) + 10,
+        })
+        .eq("id", user_id);
+
+      if (updateError) {
+        console.error("Reputation update failed:", updateError.message);
+      }
+    }
+
     // 3. TRIGGER NOTIFICATIONS (Interest-Based / Same Course)
     if (postData && category) {
       try {

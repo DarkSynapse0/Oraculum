@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -34,6 +35,7 @@ type Answer = {
   id: number;
   content: string;
   username: string;
+  likes: number;
   created_at: string;
 };
 type Reply = {
@@ -48,6 +50,7 @@ type Reply = {
 export default function ViewClient({ user }: { user: User }) {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
+  const userId = user.id;
 
   // Content States
   const [post, setPost] = useState<Post | null>(null);
@@ -129,6 +132,28 @@ export default function ViewClient({ user }: { user: User }) {
       }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleLike = async (answerId: number) => {
+    try {
+      const res = await fetch("/api/answers/like", {
+        method: "POST",
+        body: JSON.stringify({ answerId, userId }),
+      });
+      const data = await res.json();
+
+      if (!data.error) {
+        setAnswers((prev) =>
+          prev.map((ans) =>
+            ans.id === answerId
+              ? { ...ans, likes: data.likes, liked: data.liked }
+              : ans,
+          ),
+        );
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -287,6 +312,14 @@ export default function ViewClient({ user }: { user: User }) {
                 </div>
 
                 <div className="flex items-center gap-4 pt-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 text-xs gap-1.5 text-muted-foreground hover:text-primary transition-colors"
+                    onClick={() => handleLike(answer.id)}
+                  >
+                    ❤️ {answer.likes || 0}
+                  </Button>
                   <Button
                     variant="ghost"
                     size="sm"
